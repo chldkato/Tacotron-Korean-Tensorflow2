@@ -1,0 +1,17 @@
+max_char = 105
+sample_rate = 22050
+n_fft = 1024
+hop_length = 256
+win_length = 1024
+preemphasis = 0.97
+ref_db = 20
+max_db = 100
+mel_dim = 80
+max_length = 780
+reduction = 5
+embedding_dim = 256
+decoder_dim = 256
+symbol_length = 70
+batch_size = 32
+checkpoint_step = 500
+max_iter = 200
