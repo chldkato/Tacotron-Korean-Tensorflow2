@@ -16,7 +16,7 @@ text_list = glob.glob(os.path.join(data_dir + '/text', '*.npy'))
 mel_list = glob.glob(os.path.join(data_dir + '/mel', '*.npy'))
 dec_list = glob.glob(os.path.join(data_dir + '/dec', '*.npy'))
 
-fn = os.path.join(data_dir + '/mel_len.py')
+fn = os.path.join(data_dir + '/mel_len.npy')
 if not os.path.isfile(fn):
     mel_len_list = []
     for i in range(len(mel_list)):
