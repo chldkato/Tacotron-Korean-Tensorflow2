@@ -1,7 +1,7 @@
 import os, librosa, glob, scipy
-import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
+import soundfile as sf
 from tensorflow.keras.optimizers import Adam
 from models.tacotron import post_CBHG
 from models.modules import griffin_lim
@@ -28,8 +28,8 @@ def test_step(mel, idx):
     endpoint = librosa.effects.split(wav, frame_length=win_length, hop_length=hop_length)[0, 1]
     wav = wav[:endpoint]
     wav = wav.astype(np.float32)
-    scipy.io.wavfile.write(os.path.join(save_dir, '{}.wav'.format(idx)), sample_rate, wav)
-
+    sf.write(os.path.join(save_dir, '{}.wav'.format(idx)), wav, sample_rate)
+    
 
 model = post_CBHG(K=8, conv_dim=[256, mel_dim])
 optimizer = Adam()
