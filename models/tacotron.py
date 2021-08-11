@@ -22,6 +22,7 @@ class Decoder(tf.keras.Model):
         super(Decoder, self).__init__()
         self.pre_net = pre_net()
         self.attention_rnn = GRU(decoder_dim, return_sequences=True)
+        self.attention = LuongAttention()  # LuongAttention() or BahdanauAttention()
         self.proj1 = Dense(decoder_dim)
         self.dec_rnn1 = GRU(decoder_dim, return_sequences=True)
         self.dec_rnn2 = GRU(decoder_dim, return_sequences=True)
@@ -30,7 +31,7 @@ class Decoder(tf.keras.Model):
     def call(self, batch, dec_input, enc_output):
         x = self.pre_net(dec_input, is_training=True)
         x = self.attention_rnn(x)
-        context, alignment = attention(x, enc_output)
+        context, alignment = self.attention(x, enc_output)
 
         dec_rnn_input = self.proj1(context)
         dec_rnn_input += self.dec_rnn1(dec_rnn_input)
