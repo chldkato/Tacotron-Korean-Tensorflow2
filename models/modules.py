@@ -77,12 +77,34 @@ class CBHG(tf.keras.Model):
         return x
 
 
-def attention(query, value):
-    alignment = tf.nn.softmax(tf.matmul(query, value, transpose_b=True))
-    context = tf.matmul(alignment, value)
-    context = tf.concat([context, query], axis=-1)
-    alignment = tf.transpose(alignment, [0, 2, 1])
-    return context, alignment
+class LuongAttention(tf.keras.Model):
+    def __init__(self):
+        super(LuongAttention, self).__init__()
+        self.w = Dense(decoder_dim)
+
+    def call(self, query, value):
+        alignment = tf.nn.softmax(tf.matmul(query, self.w(value), transpose_b=True))
+        context = tf.matmul(alignment, value)
+        context = tf.concat([context, query], axis=-1)
+        alignment = tf.transpose(alignment, [0, 2, 1])
+        return context, alignment
+
+
+class BahdanauAttention(tf.keras.Model):
+    def __init__(self):
+        super(BahdanauAttention, self).__init__()
+        self.w1 = Dense(decoder_dim)
+        self.w2 = Dense(decoder_dim)
+
+    def call(self, query, value):
+        query_ = tf.expand_dims(self.w1(query), axis=2)
+        value_ = tf.expand_dims(self.w2(value), axis=1)
+        score = tf.reduce_sum(tf.tanh(query_ + value_), axis=-1)
+        alignment = tf.nn.softmax(score)
+        context = tf.matmul(alignment, value)
+        context = tf.concat([context, query], axis=-1)
+        alignment = tf.transpose(alignment, [0, 2, 1])
+        return context, alignment
 
 
 def griffin_lim(spectrogram):
